@@ -1,112 +1,98 @@
-<!DOCTYPE html>eb Interface
+<!DOCTYPE html>
 <html lang="en">
-<head>n web interface to chat with your locally hosted [Ollama](https://ollama.ai/) models.
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ollama Chat</title>
     <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet"> any model available in your Ollama installation
-    <meta name="description" content="Chat with your local Ollama models through a clean web interface">istory in your browser's local storage
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <meta name="description" content="Chat with your local Ollama models through a clean web interface">
 </head>
 <body>
     <div class="app-container">
         <aside class="sidebar">
             <div class="sidebar-header">
-                <h1>Ollama Chat</h1>00vh;
-                <button id="new-chat-btn" class="new-chat-btn"># Main HTML file
+                <h1>Ollama Chat</h1>
+                <button id="new-chat-btn" class="new-chat-btn">
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M8 1V15M1 8H15" stroke="currentColor" stroke-width="2" stroke-linecap="round" />lient-side JavaScript
+                        <path d="M8 1V15M1 8H15" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
                     </svg>
                     New Chat
                 </button>
             </div>
-            <div class="model-selector-container">d as a static website on GitHub Pages. When visitors access the website, it will connect to their own locally running Ollama instance.
+            <div class="model-selector-container">
                 <label for="model-selector" class="model-label">Model</label>
-                <div class="custom-select">w: 0 4px 6px rgba(0, 0, 0, 0.1);
-                    <div class="select-wrapper">> Pages: 500px;
-                        <select id="model-selector" class="model-selector">"Source", select "main" branch        }
-                            <option value="" disabled selected>Select Model</option>ve" to publish your site
+                <div class="custom-select">
+                    <div class="select-wrapper">
+                        <select id="model-selector" class="model-selector">
+                            <option value="" disabled selected>Select Model</option>
                             <!-- Models will be populated dynamically -->
                         </select>
                         <div class="select-icon">
-                            <svg width="12" height="7" viewBox="0 0 12 7" fill="none" xmlns="http://www.w3.org/2000/svg">le CORS on your Ollama server
+                            <svg width="12" height="7" viewBox="0 0 12 7" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M1 1L6 6L11 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                            </svg>to enable CORS on your Ollama server to allow this web interface to connect to it:
+                            </svg>
                         </div>
-                    </div> #3498db;
-                </div>ne;
-A_ORIGINS=*
-                <div id="connection-settings" class="connection-settings">a:hover {
+                    </div>
+                </div>
+
+                <div id="connection-settings" class="connection-settings">
                     <label for="ollama-url" class="model-label">Ollama URL</label>
                     <input type="text" id="ollama-url" class="ollama-url-input" value="http://localhost:11434" placeholder="http://localhost:11434">
-                    <button id="test-connection" class="test-connection-btn">Test Connection</button>**    </style>
+                    <button id="test-connection" class="test-connection-btn">Test Connection</button>
                     <div id="connection-status" class="connection-status"></div>
-                </div>_ORIGINS=* ollama serve<body>
+                </div>
             </div>
             <div class="chat-history">
-                <h2>Chat History</h2>origin instead of using `*`.
+                <h2>Chat History</h2>
                 <ul id="history-list">
-                    <!-- Chat history will be added here dynamically -->ess the GitHub Pages website
+                    <!-- Chat history will be added here dynamically -->
                 </ul>
-            </div>he GitHub Pages URL where this project is hosted.
-        </aside>### 3. Connect to your local OllamaIn the interface, verify the Ollama URL is set to http://localhost:11434 and click "Test Connection".### 4. Select a model and start chattingSelect one of your installed models and start chatting!## Privacy and Security- This is a client-side only application- All conversations are stored locally in your browser- No data is sent to any server other than your local Ollama instance- The web interface only connects to the Ollama URL you specify## DevelopmentTo modify or extend this interface:1. Clone the repository
+            </div>
+        </aside>
+        <main class="main-content">
+            <div id="chat-container" class="chat-container">
+                <div class="welcome-message">
+                    <h2>Welcome to Ollama Chat</h2>
+                    <p>Connect to your local Ollama instance to start chatting with AI models.</p>
+                    <p class="instructions">
+                        1. Ensure Ollama is running on your local machine<br>
+                        2. Enable CORS in Ollama by setting <code>OLLAMA_ORIGINS=*</code><br>
+                        3. Test your connection and select a model<br>
+                        4. Start chatting!
+                    </p>
+                </div>
+            </div>
+            <div class="input-container">
+                <div class="input-wrapper">
+                    <textarea id="message-input" placeholder="Type your message here..." rows="1" disabled></textarea>
+                    <button class="send-button" id="send-button" disabled>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M22 2L11 13M22 2L15 22L11 13M22 2L2 9L11 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="status-indicator">
+                    <div id="model-info" class="model-info">Not connected</div>
+                    <div class="shortcuts-info">
+                        <span title="Press Enter to send, Shift+Enter for new line">Enter ↵</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
 
+    <!-- Confirm dialog template -->
+    <div id="confirm-dialog" class="confirm-dialog" style="display: none;">
+        <div class="dialog-title">Delete Conversation</div>
+        <div class="dialog-message">Are you sure you want to delete this conversation? This action cannot be undone.</div>
+        <div class="dialog-actions">
+            <button id="cancel-delete" class="dialog-btn dialog-btn-cancel">Cancel</button>
+            <button id="confirm-delete" class="dialog-btn dialog-btn-delete">Delete</button>
+        </div>
+    </div>
+    <div id="dialog-backdrop" class="dialog-backdrop" style="display: none;"></div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-</html></body>    <script src="app.js"></script>    <div id="dialog-backdrop" class="dialog-backdrop" style="display: none;"></div>    </div>        </div>            <button id="confirm-delete" class="dialog-btn dialog-btn-delete">Delete</button>            <button id="cancel-delete" class="dialog-btn dialog-btn-cancel">Cancel</button>        <div class="dialog-actions">        <div class="dialog-message">Are you sure you want to delete this conversation? This action cannot be undone.</div>        <div class="dialog-title">Delete Conversation</div>    <div id="confirm-dialog" class="confirm-dialog" style="display: none;">    <!-- Confirm dialog template -->    </div>        </main>            </div>                </div>                    </div>                        <span title="Press Enter to send, Shift+Enter for new line">Enter ↵</span>                    <div class="shortcuts-info">                    <div id="model-info" class="model-info">Not connected</div>                <div class="status-indicator">                </div>                    </button>                        </svg>                            <path d="M22 2L11 13M22 2L15 22L11 13M22 2L2 9L11 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">                    <button class="send-button" id="send-button" disabled>                    <textarea id="message-input" placeholder="Type your message here..." rows="1" disabled></textarea>                <div class="input-wrapper">            <div class="input-container">            </div>                </div>                    </div>                        </ol>                            <li>Select a model and start chatting!</li>                            <li>Click "Test Connection" above to verify connection to your local Ollama</li>                            </li>                                <small>(Use <code>OLLAMA_ORIGINS=* ollama serve</code> on Mac/Linux)</small>                                <pre><code>set OLLAMA_ORIGINS=* && ollama serve</code></pre>                            <li>Enable CORS in Ollama with this command:                            <li>Make sure <a href="https://ollama.ai" target="_blank">Ollama</a> is installed and running on your computer</li>                        <ol>                        <p><strong>Important:</strong> This web interface connects directly to your local Ollama instance.</p>                    <div class="instructions">                    <p>Connect to your local Ollama instance to start chatting with AI models.</p>                    <h2>Welcome to Ollama Chat</h2>                <div class="welcome-message">            <div id="chat-container" class="chat-container">        <main class="main-content">2. Make your changes to the HTML, CSS, or JavaScript
-3. Test locally by opening index.html in your browser
-4. Push changes to GitHub to update the public site
-
-## License
-
-MIT
+    <script src="app.js"></script>
+</body>
+</html>
