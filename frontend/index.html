@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ollama Chat</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h1>Ollama Chat</h1>
+                <button id="new-chat" class="new-chat-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 4V20M4 12H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                    New Chat
+                </button>
+            </div>
+            
+            <div class="model-selector-container">
+                <label for="model-selector" class="model-label">Model</label>
+                <div class="custom-select">
+                    <div class="select-wrapper">
+                        <select id="model-selector" class="model-selector">
+                            <option value="" disabled selected>Select a model</option>
+                            <!-- Models will be populated here -->
+                        </select>
+                        <div class="select-icon">
+                            <svg width="12" height="7" viewBox="0 0 12 7" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M1 1L6 6L11 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="chat-history">
+                <h2>Recent Chats</h2>
+                <ul id="history-list">
+                    <!-- Chat history will be populated here -->
+                </ul>
+            </div>
+        </aside>
+        
+        <main class="main-content">
+            <div class="chat-container" id="chat-container">
+                <div class="welcome-message">
+                    <h2>Welcome to Ollama Chat</h2>
+                    <p>Select a model and start a conversation</p>
+                </div>
+                <!-- Chat messages will appear here -->
+            </div>
+            
+            <div class="input-container">
+                <form id="chat-form">
+                    <div class="input-wrapper">
+                        <textarea 
+                            id="message-input" 
+                            placeholder="Message Ollama..." 
+                            rows="1"
+                            autocomplete="off"
+                        ></textarea>
+                        <button type="submit" class="send-button" disabled>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M22 2L11 13M22 2L15 22L11 13M11 13L2 9L22 2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </button>
+                    </div>
+                </form>
+                <div class="status-indicator">
+                    <p class="model-info">Using <span id="current-model">no model selected</span></p>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
