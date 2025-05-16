@@ -5,79 +5,94 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ollama Chat</title>
     <link rel="stylesheet" href="styles.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <meta name="description" content="Chat with your local Ollama models through a clean web interface">
 </head>
 <body>
     <div class="app-container">
         <aside class="sidebar">
             <div class="sidebar-header">
                 <h1>Ollama Chat</h1>
-                <button id="new-chat" class="new-chat-btn">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 4V20M4 12H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <button id="new-chat-btn" class="new-chat-btn">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M8 1V15M1 8H15" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
                     </svg>
                     New Chat
                 </button>
             </div>
-            
             <div class="model-selector-container">
                 <label for="model-selector" class="model-label">Model</label>
                 <div class="custom-select">
                     <div class="select-wrapper">
                         <select id="model-selector" class="model-selector">
-                            <option value="" disabled selected>Select a model</option>
-                            <!-- Models will be populated here -->
+                            <option value="" disabled selected>Select Model</option>
+                            <!-- Models will be populated dynamically -->
                         </select>
                         <div class="select-icon">
                             <svg width="12" height="7" viewBox="0 0 12 7" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M1 1L6 6L11 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M1 1L6 6L11 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
                             </svg>
                         </div>
                     </div>
                 </div>
+
+                <div id="connection-settings" class="connection-settings">
+                    <label for="ollama-url" class="model-label">Ollama URL</label>
+                    <input type="text" id="ollama-url" class="ollama-url-input" value="http://localhost:11434" placeholder="http://localhost:11434">
+                    <button id="test-connection" class="test-connection-btn">Test Connection</button>
+                    <div id="connection-status" class="connection-status"></div>
+                </div>
             </div>
-            
             <div class="chat-history">
-                <h2>Recent Chats</h2>
+                <h2>Chat History</h2>
                 <ul id="history-list">
-                    <!-- Chat history will be populated here -->
+                    <!-- Chat history will be added here dynamically -->
                 </ul>
             </div>
         </aside>
-        
         <main class="main-content">
-            <div class="chat-container" id="chat-container">
+            <div id="chat-container" class="chat-container">
                 <div class="welcome-message">
                     <h2>Welcome to Ollama Chat</h2>
-                    <p>Select a model and start a conversation</p>
+                    <p>Connect to your local Ollama instance to start chatting with AI models.</p>
+                    <p class="instructions">
+                        1. Ensure Ollama is running on your local machine<br>
+                        2. Enable CORS in Ollama by setting <code>OLLAMA_ORIGINS=*</code><br>
+                        3. Test your connection and select a model<br>
+                        4. Start chatting!
+                    </p>
                 </div>
-                <!-- Chat messages will appear here -->
             </div>
-            
             <div class="input-container">
-                <form id="chat-form">
-                    <div class="input-wrapper">
-                        <textarea 
-                            id="message-input" 
-                            placeholder="Message Ollama..." 
-                            rows="1"
-                            autocomplete="off"
-                        ></textarea>
-                        <button type="submit" class="send-button" disabled>
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M22 2L11 13M22 2L15 22L11 13M11 13L2 9L22 2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                        </button>
-                    </div>
-                </form>
+                <div class="input-wrapper">
+                    <textarea id="message-input" placeholder="Type your message here..." rows="1" disabled></textarea>
+                    <button class="send-button" id="send-button" disabled>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M22 2L11 13M22 2L15 22L11 13M22 2L2 9L11 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </button>
+                </div>
                 <div class="status-indicator">
-                    <p class="model-info">Using <span id="current-model">no model selected</span></p>
+                    <div id="model-info" class="model-info">Not connected</div>
+                    <div class="shortcuts-info">
+                        <span title="Press Enter to send, Shift+Enter for new line">Enter ↵</span>
+                    </div>
                 </div>
             </div>
         </main>
     </div>
-    <script src="script.js"></script>
+
+    <!-- Confirm dialog template -->
+    <div id="confirm-dialog" class="confirm-dialog" style="display: none;">
+        <div class="dialog-title">Delete Conversation</div>
+        <div class="dialog-message">Are you sure you want to delete this conversation? This action cannot be undone.</div>
+        <div class="dialog-actions">
+            <button id="cancel-delete" class="dialog-btn dialog-btn-cancel">Cancel</button>
+            <button id="confirm-delete" class="dialog-btn dialog-btn-delete">Delete</button>
+        </div>
+    </div>
+    <div id="dialog-backdrop" class="dialog-backdrop" style="display: none;"></div>
+
+    <script src="app.js"></script>
 </body>
 </html>

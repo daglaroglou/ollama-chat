@@ -1,15 +1,13 @@
-# Ollama Chat UI
+# Ollama Chat Web Interface
 
-A modern chat interface for Ollama LLM models with a clean, responsive design.
+A clean web interface to chat with your locally hosted [Ollama](https://ollama.ai/) models.
 
 ## Features
 
-- Clean, intuitive UI with social media-style chat bubbles
-- Support for multiple Ollama models
-- Chat history with delete functionality
-- Code block formatting and syntax highlighting
-- Animated typing effect for AI responses
-- Dark mode support
+- Connect to your local Ollama instance
+- Chat with any model available in your Ollama installation
+- Store chat history in your browser's local storage
+- Clean, responsive user interface with light/dark mode support
 
 ## Project Structure
 
@@ -25,24 +23,56 @@ ollama/
     └── package.json     # Backend dependencies
 ```
 
-## Setup
+## Setup Instructions
 
-1. Install and run Ollama: https://ollama.ai/
-2. Clone this repository
-3. Run `npm install` to install dependencies
-4. Run `npm start` to start the application
-5. Open http://localhost:3000 in your browser
+### 1. Enable CORS on your Ollama server
 
-## Environment Variables
+You need to enable CORS on your Ollama server to allow this web interface to connect to it:
 
-- `PORT` - Port for the backend server (default: 3000)
-- `OLLAMA_URL` - URL for Ollama API (default: http://localhost:11434)
+**Windows:**
+```
+set OLLAMA_ORIGINS=*
+ollama serve
+```
 
-## Technologies
+**Linux/Mac:**
+```
+OLLAMA_ORIGINS=* ollama serve
+```
 
-- Node.js and Express for the backend
-- Vanilla JavaScript, HTML, and CSS for the frontend
-- Connects to local Ollama API
+For security, you may want to specify the exact origin instead of using `*`.
+
+### 2. Open the web interface
+
+Open the web interface, enter your Ollama URL (default is http://localhost:11434), and click "Test Connection".
+
+### 3. Select a model and start chatting
+
+Select one of your installed models and start chatting!
+
+## Hosting on GitHub Pages
+
+1. Create a GitHub repository
+2. Upload the frontend folder contents
+3. Go to repository Settings > Pages
+4. Under "Source", select "main" branch
+5. Click "Save" to publish your site
+
+## Privacy and Security
+
+- This is a client-side only application
+- All conversations are stored locally in your browser
+- No data is sent to any server other than your local Ollama instance
+- The web interface only connects to the Ollama URL you specify
+
+## Development
+
+To modify or extend this interface:
+
+1. Clone the repository
+2. Make your changes to the HTML, CSS, or JavaScript
+3. Test locally by opening the index.html file in your browser
+4. Push changes to GitHub to update the public site
 
 ## License
 
