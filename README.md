@@ -50,14 +50,6 @@ Open the web interface, enter your Ollama URL (default is http://localhost:11434
 
 Select one of your installed models and start chatting!
 
-## Hosting on GitHub Pages
-
-1. Create a GitHub repository
-2. Upload the frontend folder contents
-3. Go to repository Settings > Pages
-4. Under "Source", select "main" branch
-5. Click "Save" to publish your site
-
 ## Privacy and Security
 
 - This is a client-side only application
