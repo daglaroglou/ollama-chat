@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
         sendButton.addEventListener('click', sendMessage);
         newChatButton.addEventListener('click', createNewChat);
         modelSelector.addEventListener('change', handleModelChange);
-        ollamaUrlInput.addEventListener('change', saveOllamaUrl);
+        ollamaUrlInput.addEventListener('input', saveOllamaUrl);
         testConnectionButton.addEventListener('click', testConnection);
         
         // Auto adjust textarea height
@@ -47,13 +47,12 @@ document.addEventListener('DOMContentLoaded', function() {
         const storedUrl = localStorage.getItem('ollamaUrl') || 'http://localhost:11434';
         ollamaUrlInput.value = storedUrl;
         
-        // Auto test connection on load
-        setTimeout(testConnection, 500);
-        
-        // Create a new chat if there are no conversations
+        // Update history list
         updateHistoryList();
+        
+        // Load most recent chat or create new one
         if (Object.keys(conversations).length === 0) {
-            createNewChat();
+            // Don't create a new chat until user wants to - let welcome screen show first
         } else {
             // Load the most recent chat
             const mostRecentId = Object.keys(conversations).sort((a, b) => {
@@ -162,10 +161,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function saveOllamaUrl() {
-        const url = ollamaUrlInput.value.trim();
-        if (url) {
-            localStorage.setItem('ollamaUrl', url);
-        }
+        localStorage.setItem('ollamaUrl', ollamaUrlInput.value.trim());
     }
     
     function adjustTextareaHeight() {
@@ -295,7 +291,26 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (remainingIds.length > 0) {
                     loadChat(remainingIds[0]);
                 } else {
-                    createNewChat();
+                    // Show welcome screen instead of creating new chat
+                    currentChatId = null;
+                    chatContainer.innerHTML = `
+                        <div class="welcome-message">
+                            <h2>Welcome to Ollama Chat</h2>
+                            <p>Connect to your local Ollama instance to start chatting with AI models.</p>
+                            <div class="instructions">
+                                <p><strong>Important:</strong> This web interface connects directly to your local Ollama instance.</p>
+                                <ol>
+                                    <li>Make sure <a href="https://ollama.ai" target="_blank">Ollama</a> is installed and running on your computer</li>
+                                    <li>Enable CORS in Ollama with this command:
+                                        <pre><code>set OLLAMA_ORIGINS=* && ollama serve</code></pre>
+                                        <small>(Use <code>OLLAMA_ORIGINS=* ollama serve</code> on Mac/Linux)</small>
+                                    </li>
+                                    <li>Click "Test Connection" above to verify connection to your local Ollama</li>
+                                    <li>Select a model and start chatting!</li>
+                                </ol>
+                            </div>
+                        </div>
+                    `;
                 }
             }
             
@@ -311,14 +326,15 @@ document.addEventListener('DOMContentLoaded', function() {
         messageInput.value = '';
         messageInput.style.height = 'auto';
         
+        // If no active chat, create one
+        if (!currentChatId) {
+            createNewChat();
+        }
+        
         // Add user message to chat
         appendMessageToChat('user', message);
         
         // Save message to conversation
-        if (!conversations[currentChatId]) {
-            createNewChat();
-        }
-        
         conversations[currentChatId].messages.push({
             role: 'user',
             content: message
@@ -380,7 +396,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .catch(error => {
             console.error("API error:", error);
             removeLoadingIndicator(loadingId);
-            appendMessageToChat('system', 'Error: Failed to get a response. Please check your connection.');
+            appendMessageToChat('system', 'Error: Failed to get a response. Please check your connection to Ollama.');
             scrollToBottom();
         });
     }
@@ -453,7 +469,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function formatAIResponse(content) {
-        // This is a basic formatter - you can add markdown formatting later
+        // This is a basic formatter - you can add more markdown formatting later
         // For now, we'll just handle code blocks and line breaks
         
         // Escape HTML first

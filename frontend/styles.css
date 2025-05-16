@@ -421,11 +421,37 @@ body {
     line-height: 1.8;
 }
 
-.welcome-message code {
+.welcome-message .instructions ol {
+    padding-left: 1.5rem;
+    margin: 1rem 0;
+}
+
+.welcome-message .instructions li {
+    margin-bottom: 0.75rem;
+}
+
+.welcome-message .instructions pre {
+    background-color: var(--bg-tertiary);
+    padding: 0.5rem;
+    border-radius: var(--radius-sm);
+    margin: 0.5rem 0;
+    overflow-x: auto;
+}
+
+.welcome-message .instructions code {
     font-family: var(--font-mono);
     background-color: var(--bg-tertiary);
     padding: 0.125rem 0.25rem;
     border-radius: 3px;
+}
+
+.welcome-message a {
+    color: var(--accent-color);
+    text-decoration: none;
+}
+
+.welcome-message a:hover {
+    text-decoration: underline;
 }
 
 /* Message bubbles styling */
