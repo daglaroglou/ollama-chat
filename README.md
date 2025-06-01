@@ -65,7 +65,3 @@ To modify or extend this interface:
 2. Make your changes to the HTML, CSS, or JavaScript
 3. Test locally by opening the index.html file in your browser
 4. Push changes to GitHub to update the public site
-
-## License
-
-MIT
