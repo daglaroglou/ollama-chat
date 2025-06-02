@@ -17,6 +17,119 @@
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
+/* Add these styles to your styles.css file */
+
+/* User profile in sidebar */
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    margin-top: auto;
+    border-top: 1px solid var(--border-color);
+}
+
+.user-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.user-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.user-name-container {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex: 1;
+}
+
+.user-name {
+    font-size: 14px;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 150px;
+}
+
+.edit-name-btn {
+    background: none;
+    border: none;
+    padding: 2px;
+    cursor: pointer;
+    opacity: 0.6;
+    color: var(--text-color);
+}
+
+.edit-name-btn:hover {
+    opacity: 1;
+}
+
+.name-input {
+    font-size: 14px;
+    width: 100%;
+    padding: 5px 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+
+/* Chat message avatars */
+.message {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.message-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.message-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.message-content {
+    flex: 1;
+}
+
+.message-name {
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 4px;
+    color: var(--text-color-light);
+}
+
+.message-text {
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+/* Make sure the sidebar has proper layout for the profile at the bottom */
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.chat-history {
+    flex: 1;
+    overflow-y: auto;
+}
+
 @media (prefers-color-scheme: dark) {
     :root {
         --bg-primary: #09090b;

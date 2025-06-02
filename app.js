@@ -14,7 +14,106 @@ document.addEventListener('DOMContentLoaded', function() {
     const ollamaUrlInput = document.getElementById('ollama-url');
     const testConnectionButton = document.getElementById('test-connection');
     const connectionStatus = document.getElementById('connection-status');
-    
+    const userName = document.getElementById('user-name');
+    const editNameBtn = document.getElementById('edit-name-btn');
+    const nameInput = document.getElementById('name-input');
+    const userAvatar = document.getElementById('user-avatar-img');
+    const savedName = localStorage.getItem('ollama-chat-username') || 'User';
+    userName.textContent = savedName;
+    updateAvatar(savedName);
+
+    editNameBtn.addEventListener('click', function() {
+        nameInput.value = userName.textContent;
+        userName.style.display = 'none';
+        editNameBtn.style.display = 'none';
+        nameInput.style.display = 'inline-block';
+        nameInput.focus();
+    });
+
+    nameInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            saveName();
+        } else if (e.key === 'Escape') {
+            cancelEdit();
+        }
+    });
+
+    function createMessageElement(message, isUser) {
+        const messageElement = document.createElement('div');
+        messageElement.classList.add('message', isUser ? 'user-message' : 'model-message');
+
+        // Add avatar container
+        const avatarContainer = document.createElement('div');
+        avatarContainer.classList.add('message-avatar');
+
+        const avatarImg = document.createElement('img');
+        if (isUser) {
+            // Get current user avatar
+            const username = localStorage.getItem('ollama-chat-username') || 'User';
+            avatarImg.src = `https://api.dicebear.com/9.x/notionists-neutral/png?seed=${encodeURIComponent(username)}`;
+        } else {
+            // Model avatar - you can use a different style or seed for the AI
+            avatarImg.src = `https://api.dicebear.com/9.x/notionists-neutral/png?seed=ai-model`;
+        }
+        avatarImg.alt = isUser ? 'User' : 'AI';
+
+        avatarContainer.appendChild(avatarImg);
+        messageElement.appendChild(avatarContainer);
+
+        // Message content
+        const contentContainer = document.createElement('div');
+        contentContainer.classList.add('message-content');
+
+        // Add name display
+        const nameDisplay = document.createElement('div');
+        nameDisplay.classList.add('message-name');
+        nameDisplay.textContent = isUser ? (localStorage.getItem('ollama-chat-username') || 'User') : document.getElementById('model-selector').value;
+        contentContainer.appendChild(nameDisplay);
+
+        // Message text
+        const textElement = document.createElement('div');
+        textElement.classList.add('message-text');
+        contentContainer.appendChild(textElement);
+
+        messageElement.appendChild(contentContainer);
+
+        // Set message content based on format
+        if (typeof message === 'string') {
+            textElement.textContent = message;
+        } else {
+            textElement.innerHTML = message;
+        }
+
+        return messageElement;
+    }
+
+    nameInput.addEventListener('blur', saveName);
+
+    function saveName() {
+        const newName = nameInput.value.trim();
+        if (newName) {
+            userName.textContent = newName;
+            localStorage.setItem('ollama-chat-username', newName);
+            updateAvatar(newName);
+        }
+        cancelEdit();
+    }
+
+    function cancelEdit() {
+        userName.style.display = 'inline-block';
+        editNameBtn.style.display = 'inline-block';
+        nameInput.style.display = 'none';
+    }
+
+function updateAvatar(name) {
+        userAvatar.src = `https://api.dicebear.com/9.x/notionists-neutral/png?seed=${encodeURIComponent(name)}`;
+
+        // Update all user message avatars in the chat
+        document.querySelectorAll('.user-message .message-avatar img').forEach(img => {
+            img.src = userAvatar.src;
+        });
+    }
+
     // State
     let currentChatId = null;
     let conversations = loadConversations();
@@ -436,11 +535,16 @@ document.addEventListener('DOMContentLoaded', function() {
         let messageHtml;
         
         if (role === 'user') {
+            const username = localStorage.getItem('ollama-chat-username') || 'User';
+            const avatarSrc = `https://api.dicebear.com/9.x/notionists-neutral/png?seed=${encodeURIComponent(username)}`;
+            
             messageHtml = `
                 <div class="message user">
                     <div class="message-wrapper">
                         <div class="message-content">${escapeHtml(content)}</div>
-                        <div class="message-avatar">You</div>
+                        <div class="message-avatar">
+                            <img src="${avatarSrc}" alt="User avatar" class="avatar-img">
+                        </div>
                     </div>
                 </div>
             `;
